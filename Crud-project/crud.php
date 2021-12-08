@@ -1,6 +1,6 @@
 <?php
 // INSERT INTO `notes` (`sno`, `title`, `description`, `tstamp`) VALUES (NULL, 'buy books ', 'please buy books from book store', current_timestamp());
-$insert=false;
+$insert = false;
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -11,17 +11,16 @@ $conn = mysqli_connect($servername, $username, $password, $database);
 if (!$conn) {
   die("sorry connection failed" . mysqli_connect_error());
 }
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = $_POST["title"];
   $desc = $_POST["description"];
   //sql query
   $sql = "INSERT INTO `notes` (`sno`, `title`, `description`, `tstamp`) VALUES (NULL, '$title', '$desc', current_timestamp())";
   $result = mysqli_query($conn, $sql);
-  if($result){
-    $insert=true;
-  }
-  else{
-    echo "the".mysqli_error($conn);
+  if ($result) {
+    $insert = true;
+  } else {
+    echo "the" . mysqli_error($conn);
   }
 }
 // $sql = "SELECT * FROM `information`";
@@ -82,12 +81,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     </div>
   </nav>
   <?php
-  if($insert === true){
+  if ($insert === true) {
     echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
     <strong>Hey</strong> Youre note is successfully inserted below under the table.
     <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
   </div>";
-}
+  }
   ?>
   <div class="container">
     <h2 class="pt-4 pl-6">Add a Note</h2>
@@ -104,7 +103,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         <label for="desc">Write Note Here</label>
       </div>
 
-      <button type="submit" class = "btn btn-primary mt-2">Add Note</button>
+      <button type="submit" class="btn btn-primary mt-2">Add Note</button>
     </form>
   </div>
   <div class="container" id="myTable">
@@ -138,9 +137,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
   <script>
-    $(document).ready( function () {
-    $('#myTable').DataTable();
-     } );
+    $(document).ready(function() {
+      $('#myTable').DataTable();
+    });
   </script>
 </body>
 
