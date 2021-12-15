@@ -13,7 +13,7 @@ if (!$conn) {
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = $_POST["title"];
-  $desc = $_POST["description"];
+  $desc = $_POST["desc"];
   //sql query
   $sql = "INSERT INTO `notes` (`sno`, `title`, `description`, `tstamp`) VALUES (NULL, '$title', '$desc', current_timestamp())";
   $result = mysqli_query($conn, $sql);
@@ -38,9 +38,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="stylesheet" href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <title>Professor-Notes</title>
+  
 </head>
 
 <body>
+  <!--edit body modal -->
+<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
+  Edit modal
+</button> -->
+
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">edit this notes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form class="pt-8 p-4" action="" method="post">
+      <div class="mb-3">
+        <label for="title" class="form-label font-bold">Notes Title</label>
+        <input type="text" class="form-control" id="titleEdit" name="titleEdit" aria-describedby="emailHelp">
+        <div id="emailHelp" class="form-text"> Add Notes title</div>
+      </div>
+
+      <h2 class="form-text font-bold p-2">Note</h2>
+      <div class="form-floating">
+        <textarea class="form-control" placeholder="add description here" id="descriptionEdit" name="descriptionEdit" style="height: 100px"></textarea>
+        <label for="desc">Write Note Here</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary mt-2">Update Note</button>
+    </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
   <nav class="navbar navbar-expand-lg navbar-dark bg-gray-700">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Php Crud</a>
@@ -58,20 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <li class="nav-item">
             <a class="nav-link" href="#">Contact-Us</a>
           </li>
-          <!-- <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled">Disabled</a>
-              </li> -->
+          
         </ul>
         <form class="d-flex bg-transparent ">
           <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
@@ -120,15 +145,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php
         $sql = "SELECT * FROM `notes`";
         $result = mysqli_query($conn, $sql);
+        $sno = 0;
         while ($row = mysqli_fetch_assoc($result)) {
+          $sno = $sno + 1;
           echo "<tr>
-      <th scope='row'>" . $row['sno'] . "</th> 
+      <th scope='row'>" . $sno . "</th> 
       <td>" . $row['title'] . "</td>
       <td>" . $row['description'] . "</td>
+      <td> <button class='edit btn btn-sm btn-primary'>Edit</button> <a href='/del'>Delete</a> </td>
       </tr>";
         }
+        
         ?>
-      </tbody>
+      </tbody> 
     </table>
   </div>
 
@@ -137,9 +166,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
   <script>
-    $(document).ready(function() {
-      $('#myTable').DataTable();
+    $(document).ready( function () {
+      $('#datatable').DataTable();
     });
+  </script>
+  <script>
+    edits = document.getElementsByClassName('edit');
+    Array.from(edits).forEach((element) => {
+      element.addEventListener("click", (e) => {
+        console.log("edit" );
+        tr=e.target.parentNode.parentNode;
+        // apan yahan tr tag se title aur descriptio call karre jo parent  tag hai aur sub-parenet tag hai
+        title = tr.getElementsByTagName("td")[0].innerText; 
+        description = tr.getElementsByTagName("td")[1].innerText;
+        console.log(title,description);
+        titleEdit.value = title;
+        descriptionEdit.value = description;
+        $('#editModal').modal('toggle');
+      })
+    })
   </script>
 </body>
 
