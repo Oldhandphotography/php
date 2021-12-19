@@ -11,7 +11,32 @@ $conn = mysqli_connect($servername, $username, $password, $database);
 if (!$conn) {
   die("sorry connection failed" . mysqli_connect_error());
 }
+if(isset($_GET['delete'])){
+  $sno = $_GET['delete'];
+  $delete = true;
+  $sql = "DELETE FROM `notes` WHERE `sno`= $sno";
+  $result = mysqli_query($conn, $sql);
+  echo "record deleted successfully"
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if(isset($_POST['snoEdit'])){
+    // update karenge ab record
+
+    $sno=$_POST["snoEdit"];
+    $title = $_POST["titleEdit"];
+    $description = $_POST["descriptionEdit"];
+    //sql query
+    $sql = "UPDATE `notes` SET `title` = '$title', `description` ='$description' WHERE `notes`.`sno` = $sno ";
+    $result = mysqli_query($conn, $sql);
+  }
+  else{
+    $title = $_POST["title"];
+    $desc = $_POST["desc"];
+    //sql query
+    $sql = "INSERT INTO `notes` (`sno`, `title`, `description`, `tstamp`) VALUES (NULL, '$title', '$desc', current_timestamp())";
+    $result = mysqli_query($conn, $sql);
+  }
+
   $title = $_POST["title"];
   $desc = $_POST["desc"];
   //sql query
@@ -57,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <div class="modal-body">
       <form class="pt-8 p-4" action="" method="post">
+        <input type="hidden" name="snoEdit" id="snoEdit">
       <div class="mb-3">
         <label for="title" class="form-label font-bold">Notes Title</label>
         <input type="text" class="form-control" id="titleEdit" name="titleEdit" aria-describedby="emailHelp">
@@ -152,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <th scope='row'>" . $sno . "</th> 
       <td>" . $row['title'] . "</td>
       <td>" . $row['description'] . "</td>
-      <td> <button class='edit btn btn-sm btn-primary'>Edit</button> <a href='/del'>Delete</a> </td>
+      <td> <button class='edit btn btn-sm btn-primary' id=".$row['sno'].">Edit</button> <button class='delete btn btn-sm btn-primary' id=d".$row['sno'].">Delete</button>  </td>
       </tr>";
         }
         
@@ -182,7 +208,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         console.log(title,description);
         titleEdit.value = title;
         descriptionEdit.value = description;
+       snoEdit.value = e.target.id;
         $('#editModal').modal('toggle');
+      })
+    })
+
+    deletes = document.getElementsByClassName('delete');
+    Array.from(deletes).forEach((element) => {
+      element.addEventListener("click", (e) => {
+        console.log("edit" );
+        sno = e.target.id.substr(1,);
+      
+       if(confirm("Press a Button!")){
+         console.log("yes");
+         window.location = `/Crud-project/crud.php?delete=${sno}`;
+       }
+       else{
+         cosnole.log("no");
+       }
       })
     })
   </script>
